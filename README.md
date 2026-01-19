@@ -115,7 +115,7 @@ hello
 
 Run a `.Jsay` file using Python:
 
-py justsay.py example.Jsay
+py justsay.py <your file name>.Jsay
 
 ---
 
