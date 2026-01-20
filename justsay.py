@@ -1,119 +1,90 @@
 import sys
-import os
-import random
 
-MAX_WORDS = 10
-COMMANDS = [
-    "write",
-    "say",
-    "upper",
-    "lower",
-    "repeat",
-    "count",
-    "random"
-]
-
+VALID_COMMANDS = ["write", "count", "newline", "repeat"]
 
 def error(message):
-    print(f"Error: {message}.")
+    print(f'Error: {message}')
     sys.exit(1)
 
+def process_line(line):
+    line = line.strip()
 
-def read_file(path):
-    if not os.path.exists(path):
-        error("file not found")
+    if line == "":
+        error("Empty line")
 
-    with open(path, "r", encoding="utf-8") as file:
-        content = file.read().strip()
-
-    if not content:
-        error("empty command")
-
-    return content
-
-
-def parse(content):
-    lines = content.splitlines()
-
-    if len(lines) > 1:
-        first_line = lines[0].strip().lower()
-        if not first_line.startswith("repeat"):
-            error("unexpected line break")
-
-    words = content.lower().split()
-
-    if len(words) > MAX_WORDS:
-        error("command must be 10 words or less")
-
-    return words, lines
-
-
-def run_command(words, lines):
+    words = line.split()
     command = words[0]
+    args = words[1:]
 
-    if command not in COMMANDS:
-        error(f'unknown command "{command}"')
+    # write
+    if command == "write":
+        if not args:
+            error("Nothing to write")
+        print(" ".join(args))
+        return
 
-    if command in ["write", "say"]:
-        if len(words) < 2:
-            error("nothing to write")
-        print(" ".join(words[1:]))
+    # count
+    if command == "count":
+        if not args:
+            error("Nothing to count")
+        print(len(args))
+        return
 
-    elif command == "upper":
-        print(" ".join(words[1:]).upper())
+    # newline
+    if command == "newline":
+        if args:
+            error("newline takes no arguments")
+        print()
+        return
 
-    elif command == "lower":
-        print(" ".join(words[1:]).lower())
+    # repeat
+    if command == "repeat":
+        if len(args) < 2:
+            error("repeat requires a number and a command")
 
-    elif command == "repeat":
-        if len(words) < 2 or not words[1].isdigit():
-            error("repeat requires a number")
+        count_str = args[0]
 
-        times = int(words[1])
+        if not count_str.isdigit():
+            error("repeat count must be a positive integer")
 
-        if len(lines) == 1:
-            text = " ".join(words[2:])
-        else:
-            text = lines[1].strip()
+        count = int(count_str)
 
-        for _ in range(times):
-            print(text)
+        if count <= 0:
+            error("repeat count must be positive")
 
-    elif command == "count":
-        if len(words) < 2:
-            error("nothing to count")
-        text = " ".join(words[1:])
-        print(len(text.split()))
+        inner_command = args[1]
+        inner_args = args[2:]
 
-    elif command == "random":
-        if len(words) != 3:
-            error("missing range")
+        if inner_command == "repeat":
+            error("nested repeat is not allowed")
 
-        try:
-            min_val = int(words[1])
-            max_val = int(words[2])
-        except ValueError:
-            error("numbers required")
+        if inner_command not in ["write", "newline"]:
+            error("repeat supports only write or newline")
 
-        if min_val >= max_val:
-            error("invalid range")
+        for _ in range(count):
+            if inner_command == "write":
+                if not inner_args:
+                    error("Nothing to write")
+                print(" ".join(inner_args))
+            elif inner_command == "newline":
+                print()
+        return
 
-        if max_val - min_val > 100:
-            error("range too large")
+    # bilinmeyen komut
+    error(f'Unknown command "{command}"')
 
-        print(random.randint(min_val, max_val))
+def run_file(filename):
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        error("File not found")
 
-
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: justsay <file.Jsay>")
-        sys.exit(1)
-
-    file_path = sys.argv[1]
-    content = read_file(file_path)
-    words, lines = parse(content)
-    run_command(words, lines)
-
+    for line in lines:
+        process_line(line)
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 2:
+        error("No file provided")
+
+    run_file(sys.argv[1])

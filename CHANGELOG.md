@@ -1,45 +1,22 @@
-# Changelog
+Changelog
 
 All notable changes to this project are documented in this file.
 
----
+v0.2-Beta;
 
-## v0.1-Beta
+Added:
+-newline command to explicitly create empty lines in output
+-repeat command to repeat a single command multiple times
+-Strict single-line command execution
+-Unified error output format
 
-Initial beta release of **JustSay**.
 
-### Added
-- Core JustSay interpreter written in Python
-- Support for `.Jsay` file extension
-- English-based command parsing
-- `write` and `say` commands for text output
-- `upper` command for uppercase text
-- `lower` command for lowercase text
-- `count` command to count words
-- `random` command to generate random numbers
-- `repeat` command to repeat the next line
-- Command-line execution support
+Changed:
+-Removed hint system completely
+-Enforced “one command per line” rule
+-Empty lines in .Jsay files now produce an error
 
-### Rules
-- Maximum 10 words per command
-- Commands must be written in English
-- Users cannot define new commands
-- Meaningless line breaks produce errors
-- Unknown commands produce clear error messages
-- Output is cleared on each run
 
-### Known Limitations
-- No variables or data storage
-- No user-defined commands
-- No GUI or web interface
-- Interpreter-only (CLI-based)
-
----
-
-## Planned (v0.2)
-
-- Improved error language system
-- Hint system for beginners
-- Better multiline handling
-- Extended command set
-- More example files
+Fixed:
+-Inconsistent error handling
+-Ambiguous output caused by editor line breaks

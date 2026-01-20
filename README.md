@@ -1,4 +1,4 @@
-# JustSay v0.1-Beta
+# JustSay v0.2-Beta
 
 JustSay is a beginner-friendly programming language that allows users to write
 simple English sentences and get direct results.
@@ -55,25 +55,6 @@ write hello world
 
 ---
 
-### upper
-Converts text to uppercase.
-
-upper hello
-
-Output:
-HELLO
-
----
-
-### lower
-Converts text to lowercase.
-
-lower HELLO
-
-Output:
-hello
-
----
 
 ### count
 Counts the number of words.
@@ -95,8 +76,16 @@ random 1 10
 ### repeat
 Repeats the next line a given number of times.
 
-repeat 3
-hello
+repeat 3 hello
+
+---
+
+### newline
+It writes a blank line to the terminal.
+
+write hello
+newline
+write world
 
 ---
 
@@ -107,7 +96,7 @@ hello
 - Unknown commands cause an error
 - Meaningless line breaks cause an error
 - Old output is cleared on each run
-- Users cannot define new commands (v0.1)
+- Users cannot define new commands (v0.2-Beta)
 
 ---
 
@@ -121,7 +110,7 @@ py justsay.py <your file name>.Jsay
 
 ## Version
 
-v0.1-Beta
+v0.2-Beta
 
 ---
 
