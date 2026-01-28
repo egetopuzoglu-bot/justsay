@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JustSay v0.1-Beta</title>
+
+  <!-- Browser & device check -->
+  <script>
+    const ua = navigator.userAgent.toLowerCase();
+    const isMobile = /android|iphone|ipad|tablet/.test(ua);
+    const isSafari = ua.includes("safari") && !ua.includes("chrome");
+    const isSupportedBrowser =
+      ua.includes("chrome") || ua.includes("edg") || ua.includes("opr");
+
+    if (isMobile) {
+      document.write("<h2>Sorry, JustSay does not support mobile devices yet.<br>Mobile support is coming soon.</h2>");
+      throw new Error("Mobile not supported");
+    }
+
+    if (isSafari || !isSupportedBrowser) {
+      document.write(
+        "<h2>Your browser is not supported.<br><br>Supported browsers:<br>• Chrome<br>• Edge<br>• Opera</h2>"
+      );
+      throw new Error("Browser not supported");
+    }
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background: #0f0f0f;
+      color: white;
+      overflow: hidden;
+    }
+
+    header {
+      height: 50px;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px solid #222;
+    }
+
+    #menuBtn {
+      position: absolute;
+      left: 15px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    #runBtn {
+      position: absolute;
+      right: 15px;
+      padding: 6px 14px;
+      cursor: pointer;
+    }
+
+    #container {
+      display: flex;
+      height: calc(100vh - 50px);
+    }
+
+    #sidebar {
+      width: 0;
+      background: #141414;
+      overflow: hidden;
+      transition: width 0.3s;
+      border-right: 1px solid #222;
+    }
+
+    #sidebar.open {
+      width: 220px;
+    }
+
+    #sidebar button {
+      width: 100%;
+      padding: 10px;
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    #editor, #output {
+      width: 50%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      background: #0f0f0f;
+      color: white;
+      border: none;
+      resize: none;
+      outline: none;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    #output {
+      background: #000;
+      border-left: 1px solid #222;
+      white-space: pre-wrap;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div id="menuBtn">☰</div>
+  <div>JustSay v0.1-Beta</div>
+  <button id="runBtn" disabled>Run &gt;</button>
+</header>
+
+<div id="container">
+  <div id="sidebar">
+    <button onclick="showCommands()">Commands</button>
+    <button onclick="showCreators()">Creators</button>
+    <button onclick="openSource()">Open-Source</button>
+  </div>
+
+  <div id="editor">
+    <textarea id="code" placeholder="write hello"></textarea>
+  </div>
+
+  <div id="output"></div>
+</div>
+
+<script>
+  const menuBtn = document.getElementById("menuBtn");
+  const sidebar = document.getElementById("sidebar");
+  const runBtn = document.getElementById("runBtn");
+  const codeArea = document.getElementById("code");
+  const output = document.getElementById("output");
+
+  menuBtn.onclick = () => {
+    sidebar.classList.toggle("open");
+  };
+
+  codeArea.oninput = () => {
+    runBtn.disabled = codeArea.value.trim() === "";
+  };
+
+  function run() {
+    output.innerHTML = "";
+    const lines = codeArea.value.split("\n");
+
+    try {
+      for (let line of lines) {
+        line = line.trim();
+        if (line === "" || line.startsWith("#")) continue;
+
+        if (line.startsWith("write ") || line.startsWith("say ")) {
+          output.innerHTML += line.slice(6) + "\n";
+        } else if (line === "newline") {
+          output.innerHTML += "\n";
+        } else if (line.startsWith("repeat ")) {
+          const parts = line.split(" ");
+          const count = parseInt(parts[1]);
+          const cmd = parts.slice(2).join(" ");
+          for (let i = 0; i < count; i++) {
+            if (cmd.startsWith("write ") || cmd.startsWith("say ")) {
+              output.innerHTML += cmd.slice(6) + "\n";
+            }
+          }
+        } else {
+          throw new Error("Unknown command");
+        }
+      }
+    } catch (e) {
+      output.innerHTML = `<span class="error">${e.message}</span>`;
+    }
+  }
+
+  runBtn.onclick = run;
+
+  function showCommands() {
+    alert("Commands:\nwrite / say\nnewline\nrepeat\ncomment (#)");
+  }
+
+  function showCreators() {
+    alert("Created by Ege (JustSay)");
+  }
+
+  function openSource() {
+    window.open("https://github.com/egetopuzoglu-bot/justsay", "_blank");
+  }
+</script>
+
+</body>
+</html>

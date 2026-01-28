@@ -1,3 +1,25 @@
-__pycache__/
-*.pyc
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
 .vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Node / build (ileride lazım olur)
+node_modules/
+dist/
+build/
+
+# Env files
+.env
+.env.local
+
